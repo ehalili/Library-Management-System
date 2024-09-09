@@ -1,0 +1,40 @@
+spring:
+  profiles:
+    active: dev
+  jpa:
+    show-sql: false
+    open-in-view: false
+    database: POSTGRESQL
+    properties:
+      ddl-auto: none
+      hibernate:
+        temp.use_jdbc_metadata_defaults: false
+jwt:
+  secret-key: szNr2l4Xb/d4uN/sUi5lWhKgik3wItHsktrTm0x0WoU=
+  expiration: 86400000
+  refresh-token:
+    expiration: 604800000
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/library_system
+#    username: postgres
+#    password: root
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:tc:postgresql:15-alpine:///docker_library?TC_REUSABLE=true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+

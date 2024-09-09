@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{traceId:-}] %-5level %logger{26} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="FILE1"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/agility.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{traceId:-}] %-5level %logger{26} - %msg%n
+			</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_PATH}/archived/agility.%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="FILE2"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/access/agility-access-logs.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{traceId:-}] %-5level %logger{26} - %msg%n
+			</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_PATH}/access/archived/agility-access-logs.%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<springProfile name="prod | pre-prod">
+		<logger name="org.springframework" level="INFO">
+			<appender-ref ref="FILE1" />
+		</logger>
+		<logger name="al.agility" level="INFO" additivity="false">
+			<appender-ref ref="FILE1" />
+		</logger>
+		<logger name="aspectLogging" level="INFO" additivity="false">
+			<appender-ref ref="FILE2" />
+		</logger>
+	</springProfile>
+
+	<springProfile name="dev">
+		<logger name="org.springframework" level="INFO">
+			<appender-ref ref="STDOUT" />
+		</logger>
+		<logger name="al.agility" level="DEBUG" additivity="false">
+			<appender-ref ref="STDOUT" />
+		</logger>
+		<logger name="aspectLogging" level="INFO" additivity="false">
+			<appender-ref ref="STDOUT" />
+		</logger>
+	</springProfile>
+
+
+</configuration>
